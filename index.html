@@ -3,21 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Physiological Response Visualization</title>
+    <title>Standing Up: How Your Body Keeps You Steady</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Physiological Response to Postural Changes</h1>
-        <div class="visualization-container">
-            <div id="timeSeriesChart"></div>
-        </div>
-        <p>
-           
-            So far we have taken the time to create our three files index.html main.js and style.css and also imported in the data and utilized d3.csv to import the data and create our first visualization. This first visualization utilizes an interactive subject selector in order to select each subject in the experiment to plot their respective blood flow velocity over time. The hardest part for our current point was importing the data and properly switching the csv input based on the subject bar. The last thing we have done is created a plan for our additional visualizations in order to be prepared for the next thigns we create. We think the most challenging part of the project to design will be the fluidity and comprehensive article. We believe that the hardest part of this project is not creating the visualizations but taking this dataset, and creating a comprehensive article that fully explains the dataset through multiple interactive visualizations. So making this fluid will be hard to do both creatively and technically. We want to be proud of our article and so we anticipate that this will take a lot of time and patience with debugging and designing.
+        <!-- Header -->
+        <header>
+            <h1>Standing Up: How Your Body Keeps You Steady</h1>
+            <p class="subtitle">Ever felt dizzy after standing up too fast? Let’s dive into the hidden dance of your heart, lungs, and brain that keeps you upright—most of the time.</p>
+        </header>
 
-        </p>
+        <!-- Introduction -->
+        <section id="introduction">
+            <h2>Introduction</h2>
+            <p>Your body is a symphony of systems—your heart pumps blood, your lungs breathe air, and your brain keeps everything in check, all working seamlessly together. But when you stand up suddenly, gravity pulls blood downward, challenging this harmony and risking a dizzy spell. Through this interactive journey, explore real data to see how your body fights back, adjusting in seconds to keep you steady.</p>
+            <p>Think about the last time you jumped out of bed—here’s what happened inside you.</p>
+        </section>
+
+        <!-- Time Series Explorer -->
+        <section id="time-series-explorer" class="scroll-section">
+            <h2>Interactive Time Series Explorer</h2>
+            <p>Watch how blood pressure, brain blood flow (BFV), and breathing change over time as someone stands up.</p>
+            <div class="controls">
+                <label><input type="checkbox" id="bp-check" checked> Blood Pressure</label>
+                <label><input type="checkbox" id="rbfv-check" checked> Right BFV</label>
+                <label><input type="checkbox" id="lbfv-check" checked> Left BFV</label>
+                <label><input type="checkbox" id="resp-check" checked> Respiratory</label>
+                <select id="subject-select">
+                    <option value="subj01">Subject 1</option>
+                    <option value="subj02">Subject 2</option>
+                </select>
+            </div>
+            <div id="timeSeriesChart"></div>
+        </section>
+
+        <!-- Phase-Specific Summary Dashboard -->
+        <section id="phase-summary" class="scroll-section">
+            <h2>Phase-Specific Summary Dashboard</h2>
+            <p>See the average values during rest, standing, and sitting phases.</p>
+            <div class="controls">
+                <button id="phase-rest" class="phase-btn active">Rest</button>
+                <button id="phase-stand" class="phase-btn">Stand-Up</button>
+                <button id="phase-sit" class="phase-btn">Sit-Down</button>
+            </div>
+            <div id="phaseSummaryChart"></div>
+        </section>
+
+        <!-- Correlation Explorer -->
+        <section id="correlation-explorer" class="scroll-section">
+            <h2>Correlation Explorer</h2>
+            <p>Explore how blood pressure and brain blood flow relate to each other.</p>
+            <div class="controls">
+                <select id="var1-select">
+                    <option value="Blood_Pressure">Blood Pressure</option>
+                    <option value="Right_MCA_BFV">Right BFV</option>
+                    <option value="Left_MCA_BFV">Left BFV</option>
+                    <option value="Respiratory">Respiratory</option>
+                </select>
+                <select id="var2-select">
+                    <option value="Right_MCA_BFV">Right BFV</option>
+                    <option value="Blood_Pressure">Blood Pressure</option>
+                    <option value="Left_MCA_BFV">Left BFV</option>
+                    <option value="Respiratory">Respiratory</option>
+                </select>
+            </div>
+            <div id="correlationChart"></div>
+        </section>
+
+        <!-- Brain Oxygenation Heatmap -->
+        <section id="brain-oxygenation" class="scroll-section">
+            <h2>Brain Oxygenation Heatmap</h2>
+            <p>Visualize oxygen levels in the brain over time.</p>
+            <div class="controls">
+                <input type="range" id="oxygen-slider" min="0" max="100" value="0">
+            </div>
+            <div id="brainOxygenationChart"></div>
+        </section>
+
+        <!-- Animated Physiological Journey -->
+        <section id="animated-journey" class="scroll-section">
+            <h2>Animated Physiological Journey</h2>
+            <p>Follow the body’s response step-by-step as it adjusts to standing.</p>
+            <div class="controls">
+                <button id="play-btn">Play</button>
+                <button id="pause-btn">Pause</button>
+            </div>
+            <div id="animatedJourneyChart"></div>
+            <div id="journey-text" class="annotation"></div>
+        </section>
+
+        <!-- Personalized Prediction Tool -->
+        <section id="personalized-prediction" class="scroll-section">
+            <h2>Personalized Prediction Tool</h2>
+            <p>Enter your height and weight to see how your body might respond.</p>
+            <form id="prediction-form">
+                <label for="height">Height (cm):</label>
+                <input type="number" id="height" name="height" min="100" max="250" required>
+                <label for="weight">Weight (kg):</label>
+                <input type="number" id="weight" name="weight" min="30" max="200" required>
+                <button type="submit">Predict</button>
+            </form>
+            <div id="predictionChart"></div>
+        </section>
+
+        <!-- Gamified Quiz Sections -->
+        <section id="quiz" class="scroll-section">
+            <h2>Gamified Quiz</h2>
+            <p>What happens to brain blood flow (BFV) when you stand?</p>
+            <div class="controls">
+                <button id="quiz-up">Increases</button>
+                <button id="quiz-down">Decreases</button>
+                <button id="quiz-steady">Stays Steady</button>
+            </div>
+            <div id="quizResult" class="annotation"></div>
+        </section>
+
+        <!-- Conclusion -->
+        <section id="conclusion">
+            <h2>Conclusion</h2>
+            <p>Your body’s rapid adjustments in blood pressure and brain blood flow are key to avoiding dizziness when you stand. These visualizations reveal the split-second teamwork of your systems—pretty amazing, right?</p>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>Dataset: Two-tiered response of cardiorespiratory-cerebrovascular networks to orthostatic challenge</p>
+            <p>GitHub Repository: <a href="https://github.com/your-repo">Link</a></p>
+        </footer>
     </div>
     <script src="main.js"></script>
 </body>
