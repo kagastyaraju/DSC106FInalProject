@@ -4,63 +4,64 @@ body {
     padding: 0;
     background-color: #f4f4f4;
     color: #333;
-}
-
-.container {
+  }
+  
+  .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-}
-
-header, section, footer {
+  }
+  
+  header, section, footer {
     margin-bottom: 40px;
-}
-
-h1 {
+  }
+  
+  h1 {
     font-size: 2.5em;
     color: #2c3e50;
     text-align: center;
-}
-
-.subtitle {
+  }
+  
+  .subtitle {
     font-size: 1.2em;
     color: #7f8c8d;
     text-align: center;
-}
-
-h2 {
+    margin-top: 10px;
+  }
+  
+  h2 {
     font-size: 1.8em;
     color: #34495e;
     border-bottom: 2px solid #3498db;
     padding-bottom: 5px;
-}
-
-p {
+  }
+  
+  p {
     line-height: 1.6;
     font-size: 1.1em;
-}
-
-.scroll-section {
+  }
+  
+  .scroll-section {
     opacity: 0.3;
     transition: opacity 0.5s ease-in-out;
-}
-
-.scroll-section.active {
+  }
+  
+  .scroll-section.active {
     opacity: 1;
-}
-
-.controls {
+  }
+  
+  .controls {
     margin: 10px 0;
     display: flex;
     gap: 15px;
     flex-wrap: wrap;
-}
-
-.controls label, .controls button, .controls select, .controls input {
+  }
+  
+  .controls label, .controls button, .controls select, .controls input {
     font-size: 1em;
-}
-
-button {
+  }
+  
+  button {
     padding: 8px 15px;
     background-color: #3498db;
     color: white;
@@ -68,56 +69,79 @@ button {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
-}
-
-button:hover {
+  }
+  
+  button:hover {
     background-color: #2980b9;
-}
-
-button.active {
+  }
+  
+  button.active {
     background-color: #e74c3c;
-}
-
-input[type="checkbox"], select, input[type="number"] {
+  }
+  
+  input[type="checkbox"], select, input[type="number"] {
     margin-right: 5px;
-}
-
-input[type="range"] {
+  }
+  
+  input[type="range"] {
     width: 200px;
-}
-
-#timeSeriesChart, #phaseSummaryChart, #correlationChart, 
-#brainOxygenationChart, #animatedJourneyChart, #predictionChart {
+  }
+  
+  #timeSeriesChart, #phaseSummaryChart, #correlationChart, 
+  #brainOxygenationChart, #animatedJourneyChart, #profileChart {
     width: 100%;
     height: 400px;
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 5px;
     margin-top: 20px;
-}
-
-.annotation {
+  }
+  
+  .annotation {
     margin-top: 10px;
     font-style: italic;
     color: #7f8c8d;
-}
-
-footer {
+    font-size: 1em;
+    text-align: center;
+  }
+  
+  footer {
     text-align: center;
     font-size: 0.9em;
     color: #777;
     padding-top: 20px;
     border-top: 1px solid #ddd;
-}
-
-footer a {
+  }
+  
+  footer a {
     color: #3498db;
     text-decoration: none;
-}
-
-@media (max-width: 768px) {
+  }
+  
+  /* Additional styling for the user profile input form */
+  #user-profile {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 40px;
+  }
+  
+  #user-profile form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+  }
+  
+  #user-profile label {
+    margin-right: 5px;
+  }
+  
+  @media (max-width: 768px) {
     .container { padding: 10px; }
     h1 { font-size: 2em; }
     h2 { font-size: 1.5em; }
     .controls { flex-direction: column; gap: 10px; }
-}
+  }
+  
