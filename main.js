@@ -60,11 +60,12 @@ d3.csv("combined_data.csv", d => {
     updateTimeSeries(currentSubject);
   });
 
-  // --- Interactive Time Series Explorer ---
+
+
   function updateTimeSeries(subject) {
     const svg = d3.select("#timeSeriesChart").html("")
       .append("svg")
-      .attr("width", width + margin.left + margin.right)
+      .attr("width", width + margin.left + margin.right + 100) // Increased width for legend
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
@@ -113,7 +114,7 @@ d3.csv("combined_data.csv", d => {
         { key: "Blood_pressure", color: "#e74c3c", id: "bp-check", label: "Blood Pressure"},
         { key: "right_MCA_BFV", color: "#3498db", id: "rbfv-check", label: "Right Brain Blood Flow"},
         { key: "left_MCA_BFV", color: "#c842f5", id: "lbfv-check", label: "Left Brain Blood Flow"},
-        { key: "resp_uncalibrated", color: "#2ecc71", id: "resp-check", label: "Respiratory Pattern"}
+        // { key: "resp_uncalibrated", color: "#2ecc71", id: "resp-check", label: "Respiratory Pattern"}
       ];
 
     // For each variable, check if its checkbox is checked before drawing its line
@@ -124,7 +125,7 @@ d3.csv("combined_data.csv", d => {
           .attr("fill", "none")
           .attr("stroke", line.color)
           .attr("stroke-width", 2)
-          .attr("opacity", 0.8)
+          .attr("opacity", 0.7)
           .attr("d", d3.line().x(d => x(d.Time)).y(d => y(d[line.key])));
       }
     });
@@ -176,7 +177,7 @@ d3.csv("combined_data.csv", d => {
 
     // Create a unified legend container positioned further to the right
     const legendContainer = svg.append('g')
-      .attr('transform', `translate(${width + 20}, 10)`);
+      .attr('transform', `translate(${width + 40}, 10)`); // Adjusted position for more space
     
     // Add measurement legend
     const measurementLegend = legendContainer.append('g');
@@ -189,10 +190,10 @@ d3.csv("combined_data.csv", d => {
       .style('font-size', '12px')
       .text('Measurements:');
     
-    // Add measurement items to legend
+    // Add measurement items to legend with increased spacing
     lines.forEach((line, i) => {
       const g = measurementLegend.append('g')
-        .attr('transform', `translate(0, ${i * 20 + 15})`);
+        .attr('transform', `translate(0, ${i * 25 + 20})`); // Increased vertical spacing
       
       g.append('line')
         .attr('x1', 0)
@@ -313,7 +314,9 @@ d3.csv("combined_data.csv", d => {
     `);
   }
 
-  // --- Phase-Specific Summary Dashboard ---
+
+
+
   function updatePhaseSummary(subject, phase) {
     const svg = d3.select("#phaseSummaryChart").html("")
       .append("svg")
@@ -322,12 +325,20 @@ d3.csv("combined_data.csv", d => {
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    const subjectData = data.filter(d => d.Subject === subject && d.Phase === phase);
-    const averages = measurements.map(m => ({ key: m, value: d3.mean(subjectData, d => d[m]) }));
+    // Filter data for the selected subject across all phases
+    const subjectData = data.filter(d => d.Subject === subject);
+    const phaseData = subjectData.filter(d => d.Phase === phase);
+    
+    // Filter out "resp_uncalibrated" from measurements
+    const filteredMeasurements = measurements.filter(m => m !== "resp_uncalibrated");
 
-    const x = d3.scaleBand().domain(measurements).range([0, width]).padding(0.1);
-    // Set a fixed y-axis scale with maximum value of 65
-    const yScale = d3.scaleLinear().domain([0, 180]).range([height, 0]);
+    const averages = filteredMeasurements.map(m => ({ key: m, value: d3.mean(phaseData, d => d[m]) }));
+
+    // Calculate the maximum value for the y-axis scale based on the entire subject data
+    const maxValue = d3.max(subjectData, d => Math.max(d.Blood_pressure, d.right_MCA_BFV, d.left_MCA_BFV));
+
+    const x = d3.scaleBand().domain(filteredMeasurements).range([0, width]).padding(0.1);
+    const yScale = d3.scaleLinear().domain([0, maxValue / 1.5]).range([height, 0]); // Use maxValue from all phases
 
     svg.selectAll(".bar")
       .data(averages)
@@ -341,7 +352,7 @@ d3.csv("combined_data.csv", d => {
 
     svg.append("g").attr("transform", `translate(0,${height})`).call(d3.axisBottom(x));
     svg.append("g").call(d3.axisLeft(yScale));
-  }
+}
 
   // --- Correlation Explorer ---
   function updateCorrelation(subject, var1, var2) {
@@ -451,7 +462,7 @@ d3.csv("combined_data.csv", d => {
       cursor.attr("cx", x(subjectData[i].Time))
         .attr("cy", y(subjectData[i].Blood_pressure));
       d3.select("#journey-text").text(
-        `At ${(subjectData[i].Time / 60).toFixed(1)} min: BP = ${subjectData[i].Blood_pressure.toFixed(1)} mmHg, Phase: ${subjectData[i].Phase} – And your body initiates its response, but note the brief lag, therefore the adjustment is gradual.`
+        `At ${(subjectData[i].Time / 60).toFixed(1)} min: BP = ${subjectData[i].Blood_pressure.toFixed(1)} mmHg, Phase: ${subjectData[i].Phase} – And your body initiates its response, but note the brief lag.`
       );
       i = (i + 1) % subjectData.length;
     }
@@ -512,7 +523,7 @@ d3.csv("combined_data.csv", d => {
   function setupQuiz() {
     d3.select("#quiz-up").on("click", () => d3.select("#quizResult").text("Correct! As you stand, BFV increases to compensate."));
     d3.select("#quiz-down").on("click", () => d3.select("#quizResult").text("Not quite. BFV typically rises rather than drops."));
-    d3.select("#quiz-steady").on("click", () => d3.select("#quizResult").text("Nope! The dynamic change is key."));
+    d3.select("#quiz-steady").on("click", () => d3.select("#quizResult").text("Nope! The change is key."));
   }
 
   // --- Scrollytelling ---
@@ -557,256 +568,3 @@ d3.csv("combined_data.csv", d => {
   setupQuiz();
   setupScrollytelling();
 });
-
-
-// Time Series Chart
-function initTimeSeriesChart() {
-  const container = document.getElementById('timeSeriesChart');
-  if (!container) return;
-  
-  // Clear previous chart
-  container.innerHTML = '';
-  
-  // Set dimensions
-  const margin = {top: 20, right: 30, bottom: 50, left: 60};
-  const width = container.clientWidth - margin.left - margin.right;
-  const height = 400 - margin.top - margin.bottom;
-  
-  // Create SVG
-  const svg = d3.select(container)
-    .append('svg')
-    .attr('width', width + margin.left + margin.right)
-    .attr('height', height + margin.top + margin.bottom)
-    .append('g')
-    .attr('transform', `translate(${margin.left},${margin.top})`);
-  
-  // Define the phases
-  const phases = [
-    { name: "Rest Phase", start: 0, end: 1860, color: "rgba(200, 230, 200, 0.3)" },
-    { name: "Stand-Up Phase", start: 1860, end: 1920, color: "rgba(230, 200, 200, 0.3)" },
-    { name: "Sit-Down Phase", start: 1920, end: 1980, color: "rgba(200, 200, 230, 0.3)" }
-  ];
-  
-  // Expand the time range to show all phases
-  const startTime = 1800; // Show a bit of rest phase
-  const endTime = 1980;   // Show until end of sit-down phase
-  
-  const filteredData = sampleData.filter(d => d.time >= startTime && d.time <= endTime);
-  
-  // Create scales
-  const x = d3.scaleLinear()
-    .domain([startTime, endTime])
-    .range([0, width]);
-  
-  // Find min and max values across all measures
-  const allValues = filteredData.flatMap(d => [
-    d.Blood_pressure, 
-    d.right_MCA_BFV, 
-    d.left_MCA_BFV, 
-    d.Respiratory
-  ]);
-  
-  const y = d3.scaleLinear()
-    .domain([d3.min(allValues) * 0.9, d3.max(allValues) * 1.1])
-    .range([height, 0]);
-  
-  // Add background highlights for each phase
-  phases.forEach(phase => {
-    if (phase.start >= startTime && phase.end <= endTime) {
-      svg.append('rect')
-        .attr('x', x(phase.start))
-        .attr('y', 0)
-        .attr('width', x(phase.end) - x(phase.start))
-        .attr('height', height)
-        .attr('fill', phase.color)
-        .attr('class', 'phase-highlight');
-      
-      // Add phase label at the top
-      svg.append('text')
-        .attr('x', x(phase.start) + (x(phase.end) - x(phase.start)) / 2)
-        .attr('y', 15)
-        .attr('text-anchor', 'middle')
-        .attr('fill', '#555')
-        .style('font-size', '12px')
-        .style('font-weight', 'bold')
-        .text(phase.name);
-    }
-  });
-  
-  // Add X axis
-  svg.append('g')
-    .attr('transform', `translate(0,${height})`)
-    .call(d3.axisBottom(x).tickFormat(d => `${d}s`))
-    .append('text')
-    .attr('x', width / 2)
-    .attr('y', 40)
-    .attr('fill', 'black')
-    .attr('text-anchor', 'middle')
-    .text('Time (seconds)');
-  
-  // Add Y axis
-  svg.append('g')
-    .call(d3.axisLeft(y))
-    .append('text')
-    .attr('transform', 'rotate(-90)')
-    .attr('y', -40)
-    .attr('x', -height / 2)
-    .attr('fill', 'black')
-    .attr('text-anchor', 'middle')
-    .text('Value');
-  
-  // Add vertical lines at phase transitions
-  svg.append('line')
-    .attr('x1', x(1860))
-    .attr('x2', x(1860))
-    .attr('y1', 0)
-    .attr('y2', height)
-    .attr('stroke', 'red')
-    .attr('stroke-width', 2)
-    .attr('stroke-dasharray', '5,5');
-  
-  svg.append('text')
-    .attr('x', x(1860) + 5)
-    .attr('y', 30)
-    .attr('fill', 'red')
-    .text('Stand Up');
-  
-  svg.append('line')
-    .attr('x1', x(1920))
-    .attr('x2', x(1920))
-    .attr('y1', 0)
-    .attr('y2', height)
-    .attr('stroke', 'blue')
-    .attr('stroke-width', 2)
-    .attr('stroke-dasharray', '5,5');
-  
-  svg.append('text')
-    .attr('x', x(1920) + 5)
-    .attr('y', 30)
-    .attr('fill', 'blue')
-    .text('Sit Down');
-  
-  // Create line generators
-  const bpLine = d3.line()
-    .x(d => x(d.time))
-    .y(d => y(d.Blood_pressure))
-    .curve(d3.curveMonotoneX);
-  
-  const rightBFVLine = d3.line()
-    .x(d => x(d.time))
-    .y(d => y(d.right_MCA_BFV))
-    .curve(d3.curveMonotoneX);
-  
-  const leftBFVLine = d3.line()
-    .x(d => x(d.time))
-    .y(d => y(d.left_MCA_BFV))
-    .curve(d3.curveMonotoneX);
-  
-  const respLine = d3.line()
-    .x(d => x(d.time))
-    .y(d => y(d.Respiratory))
-    .curve(d3.curveMonotoneX);
-  
-  // Add lines
-  const bpPath = svg.append('path')
-    .datum(filteredData)
-    .attr('fill', 'none')
-    .attr('stroke', 'red')
-    .attr('stroke-width', 2)
-    .attr('d', bpLine)
-    .attr('class', 'bp-line');
-  
-  const rightBFVPath = svg.append('path')
-    .datum(filteredData)
-    .attr('fill', 'none')
-    .attr('stroke', 'blue')
-    .attr('stroke-width', 2)
-    .attr('d', rightBFVLine)
-    .attr('class', 'rbfv-line');
-  
-  const leftBFVPath = svg.append('path')
-    .datum(filteredData)
-    .attr('fill', 'none')
-    .attr('stroke', 'green')
-    .attr('stroke-width', 2)
-    .attr('d', leftBFVLine)
-    .attr('class', 'lbfv-line');
-  
-  const respPath = svg.append('path')
-    .datum(filteredData)
-    .attr('fill', 'none')
-    .attr('stroke', 'purple')
-    .attr('stroke-width', 2)
-    .attr('d', respLine)
-    .attr('class', 'resp-line');
-  
-  // Handle checkbox changes
-  document.getElementById('bp-check').addEventListener('change', function() {
-    bpPath.style('display', this.checked ? 'block' : 'none');
-  });
-  
-  document.getElementById('rbfv-check').addEventListener('change', function() {
-    rightBFVPath.style('display', this.checked ? 'block' : 'none');
-  });
-  
-  document.getElementById('lbfv-check').addEventListener('change', function() {
-    leftBFVPath.style('display', this.checked ? 'block' : 'none');
-  });
-  
-  document.getElementById('resp-check').addEventListener('change', function() {
-    respPath.style('display', this.checked ? 'block' : 'none');
-  });
-  
-  // Add legend
-  const legend = svg.append('g')
-    .attr('transform', `translate(${width - 150}, 50)`);
-  
-  const legendItems = [
-    { label: 'Blood Pressure', color: 'red' },
-    { label: 'Right BFV', color: 'blue' },
-    { label: 'Left BFV', color: 'green' },
-    { label: 'Respiratory', color: 'purple' }
-  ];
-  
-  legendItems.forEach((item, i) => {
-    const g = legend.append('g')
-      .attr('transform', `translate(0, ${i * 20})`);
-    
-    g.append('rect')
-      .attr('width', 15)
-      .attr('height', 2)
-      .attr('fill', item.color);
-    
-    g.append('text')
-      .attr('x', 20)
-      .attr('y', 5)
-      .text(item.label)
-      .style('font-size', '12px');
-  });
-  
-  // Add phase legend
-  const phaseLegend = svg.append('g')
-    .attr('transform', `translate(10, ${height + 30})`);
-  
-  phaseLegend.append('text')
-    .attr('x', 0)
-    .attr('y', 0)
-    .text('Phases:')
-    .style('font-weight', 'bold');
-  
-  phases.forEach((phase, i) => {
-    const g = phaseLegend.append('g')
-      .attr('transform', `translate(${i * 150 + 60}, 0)`);
-    
-    g.append('rect')
-      .attr('width', 15)
-      .attr('height', 15)
-      .attr('fill', phase.color);
-    
-    g.append('text')
-      .attr('x', 20)
-      .attr('y', 12)
-      .text(phase.name)
-      .style('font-size', '12px');
-  });
-}
