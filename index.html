@@ -1,227 +1,317 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Standing Up: Uncovering Your Body's Hidden Resilience</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://d3js.org/d3.v7.min.js"></script>
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <title>Standing Up: Uncovering Your Body's Hidden Resilience</title>
+ <link rel="stylesheet" href="style.css" />
+ <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
-  <div class="container">
-    <!-- Header with Hook -->
-    <header>
-      <h1>Standing Up: Uncovering Your Body's Hidden Resilience</h1>
-      <p class="subtitle">
-        Ever wondered why you sometimes feel dizzy when you stand up quickly? Your body works hard to keep you steady—and it's a story of challenge, adaptation, and remarkable resilience.
-      </p>
-    </header>
+ <!-- Interactive Intro Experience -->
+ <div id="interactive-intro" class="fullscreen-intro" aria-label="Interactive introduction">
+   <div class="intro-content">
+     <h1 class="intro-title">Experience Your Body's Response</h1>
+    
+     <!-- Step 0: Introduction -->
+     <div class="intro-step" id="intro-step-0">
+       <p class="intro-text">Watch closely as we show you how your body responds to the force of gravity when you stand up!</p>
+       <p class="intro-instruction">This interactive experience will guide you through a simple, revealing experiment.</p>
+       <button id="start-experiment" class="pulse-button" aria-label="Start experiment">Start Experiment</button>
+     </div>
+    
+     <!-- Step 1: Preparation -->
+     <div class="intro-step hidden" id="intro-step-1">
+       <p class="intro-text">Sit comfortably for 10 seconds. Notice your calm, steady state...</p>
+       <div class="progress-bar">
+         <div class="progress-fill" id="sit-progress"></div>
+       </div>
+     </div>
+    
+     <!-- Step 2: The Stand -->
+     <div class="intro-step hidden" id="intro-step-2">
+       <p class="intro-text">Now, stand up as quickly as possible!</p>
+       <div class="stand-animation">
+         <div class="chair"></div>
+         <div class="figure sit"></div>
+         <div class="figure stand"></div>
+         <div class="arrow"></div>
+       </div>
+     </div>
+    
+     <!-- Step 3: Reflection -->
+     <div class="intro-step hidden" id="intro-step-3">
+       <p class="intro-text">What did you feel?</p>
+       <ul class="sensation-list">
+         <li>A brief lightheadedness?</li>
+         <li>Slight dizziness?</li>
+         <li>Vision changes?</li>
+         <li>Nothing unusual?</li>
+       </ul>
+       <p class="intro-instruction">This reaction is your body’s immediate response to gravity’s challenge.</p>
+     </div>
+    
+     <!-- Step 4: Begin Story -->
+     <div class="intro-step hidden" id="intro-step-4">
+       <p class="intro-text">Great! You just experienced your body’s response firsthand.</p>
+       <p class="intro-instruction">Let’s dive deeper into the science behind these changes.</p>
+       <button id="begin-exploration" class="pulse-button" aria-label="Begin exploration">Begin Exploration</button>
+     </div>
+    
+     <!-- Optional Narrative Overlay for Intro -->
+     <div class="narrative-overlay">
+       <p>Follow along as each visualization unfolds the hidden story of how your cardiovascular system adapts in real time!</p>
+     </div>
+   </div>
+ </div>
 
-    <!-- User Profile Input -->
-    <section id="user-profile">
-      <h2>Personalize Your Experience</h2>
-      <p>Enter your resting blood pressure and heart rate to see how your body might respond to standing up, and compare your values to our study participants.</p>
-      <form id="profile-form">
-        <label for="user-bp">Resting Blood Pressure (mmHg):</label>
-        <input type="number" id="user-bp" name="user-bp" placeholder="120" required>
-        <label for="user-hr">Resting Heart Rate (bpm):</label>
-        <input type="number" id="user-hr" name="user-hr" placeholder="70" required>
-        <button type="submit">Submit</button>
-      </form>
-      <div id="profile-feedback" class="annotation"></div>
-    </section>
 
-    <!-- Introduction: The Challenge -->
-    <section id="introduction">
-      <h2>The Challenge: Gravity's Constant Pull</h2>
-      <p>
-        When you rise from a seated or lying position, gravity pulls blood downward toward your feet. This creates an immediate physiological challenge: blood that was flowing easily to your brain suddenly gets pulled away, potentially reducing cerebral blood flow by up to 20%.
-      </p>
-      <p>
-        This momentary drop can cause that familiar lightheadedness or dizziness—a phenomenon called orthostatic hypotension. For most healthy individuals, this feeling passes quickly as your body activates a remarkable cascade of compensatory mechanisms.
-      </p>
-      <p>
-        Our study captured this dynamic process in real-time, measuring blood pressure, brain blood flow, and respiratory patterns as participants moved from sitting to standing and back again. Let's explore how your body maintains balance despite this gravitational challenge.
-      </p>
-    </section>
+ <div class="container" id="main-content">
+   <!-- Header with Hook -->
+   <header>
+     <h1>Standing Up: Uncovering Your Body's Hidden Resilience</h1>
+     <p class="subtitle">
+       Ever wondered why you sometimes feel dizzy when you stand up quickly? The many parts of your body work hard to keep you steady in order to recalibrate your disrupted homeostasis. Explore the following to understand the why and how.
+     </p>
+   </header>
 
-    <!-- Time Series Explorer: The Immediate Response -->
-    <section id="time-series-explorer" class="scroll-section">
-      <h2>Real-Time Response: The First 30 Seconds</h2>
-      <p>
-        Within seconds of standing, your blood pressure temporarily drops as gravity pulls blood away from your head. Your brain detects this change almost instantly through specialized pressure sensors (baroreceptors) in your blood vessels.
-      </p>
-      <p>
-        Watch below as we visualize the real-time changes in blood pressure and cerebral blood flow velocity (BFV) in both hemispheres of the brain. Notice the brief dip followed by a rapid recovery—this is your body's compensatory response in action.
-      </p>
-      <div class="controls">
-        <label><input type="checkbox" id="bp-check" checked> Blood Pressure</label>
-        <label><input type="checkbox" id="rbfv-check" checked> Right Brain Blood Flow</label>
-        <label><input type="checkbox" id="lbfv-check" checked> Left Brain Blood Flow</label>
-        <!-- <label><input type="checkbox" id="resp-check" checked> Respiratory Pattern</label> -->
-        <select id="subject-select">
-          <option value="subj01">Subject 1</option>
-          <option value="subj02">Subject 2</option>
-        </select>
-      </div>
-      <div id="timeSeriesChart"></div>
-      <div class="annotation" id="ts-annotation">
-        <p><strong>Key Insight:</strong> Notice how blood pressure drops momentarily upon standing (around the 1860s marker), but your brain's blood flow recovers quickly—often within 7-10 seconds. This rapid response is crucial for preventing fainting.</p>
-      </div>
-    </section>
 
-    <!-- Phase-Specific Summary Dashboard: Moments of Change -->
-    <section id="phase-summary" class="scroll-section">
-      <h2>Three Critical Phases: Rest, Stand, Sit</h2>
-      <p>
-        Your body's response to positional changes isn't uniform—it adapts differently during each phase of movement. By comparing these phases, we can better understand how your cardiovascular and cerebrovascular systems work together.
-      </p>
-      <p>
-        Each transition represents a unique physiological challenge that requires different compensatory mechanisms:
-      </p>
-      <div class="controls">
-        <button id="phase-rest" class="phase-btn active">Rest</button>
-        <button id="phase-stand" class="phase-btn">Stand-Up</button>
-        <button id="phase-sit" class="phase-btn">Sit-Down</button>
-      </div>
-      <div id="phaseSummaryChart"></div>
-      <div class="phase-explanation">
-        <p><strong>Rest Phase (0-1860s):</strong> During rest, your cardiovascular system maintains a steady state with minimal fluctuations in blood pressure and cerebral blood flow.</p>
-        <p><strong>Stand-Up Phase (1860-1920s):</strong> Upon standing, your body activates multiple compensatory mechanisms—your heart rate increases, blood vessels constrict, and your breathing pattern may change to help stabilize blood pressure.</p>
-        <p><strong>Sit-Down Phase (1920-1980s):</strong> When sitting back down, your body must readjust again as blood flow patterns reverse, sometimes causing a temporary blood pressure spike before returning to baseline.</p>
-      </div>
-    </section>
+   <!-- User Profile Input -->
+   <section id="user-profile">
+     <h2>Personalize Your Experience!</h2>
+     <p>Enter your resting blood pressure and heart rate to see how your body might respond to standing up, and compare your values to our study participants.</p>
+     <form id="profile-form">
+       <label for="user-bp">Resting Blood Pressure (mmHg):</label>
+       <input type="number" id="user-bp" name="user-bp" placeholder="120" required>
+       <label for="user-hr">Resting Heart Rate (bpm):</label>
+       <input type="number" id="user-hr" name="user-hr" placeholder="70" required>
+       <button type="submit">Submit</button>
+     </form>
+     <div id="profile-feedback" class="annotation"></div>
+   </section>
 
-    <!-- Correlation Explorer: The Dynamic Duo -->
-    <section id="correlation-explorer" class="scroll-section">
-      <h2>The Dynamic Duo: Pressure & Flow</h2>
-      <p>
-        Blood pressure and cerebral blood flow are intimately connected, but their relationship isn't always straightforward. Your brain has a remarkable ability called "cerebral autoregulation" that helps maintain consistent blood flow despite changes in blood pressure.
-      </p>
-      <p>
-        This visualization reveals how these two vital measurements interact during positional changes. By exploring different variable combinations, you can discover how your body's systems work together to protect brain function.
-      </p>
-      <div class="controls">
-        <select id="var1-select">
-          <option value="Blood_pressure">Blood Pressure</option>
-          <option value="right_MCA_BFV">Right Brain Blood Flow</option>
-          <option value="left_MCA_BFV">Left Brain Blood Flow</option>
-          <!-- <option value="Respiratory">Respiratory Pattern</option> -->
-        </select>
-        <select id="var2-select">
-          <option value="right_MCA_BFV">Right Brain Blood Flow</option>
-          <option value="Blood_pressure">Blood Pressure</option>
-          <option value="left_MCA_BFV">Left Brain Blood Flow</option>
-          <!-- <option value="Respiratory">Respiratory Pattern</option> -->
-        </select>
-      </div>
-      <div id="correlationChart"></div>
-      <div class="correlation-insight">
-        <p><strong>What This Means:</strong> A perfect correlation would indicate that your brain blood flow passively follows blood pressure changes. However, the imperfect correlation you see demonstrates your brain's active regulation—it's working to maintain stable blood flow despite pressure changes.</p>
-      </div>
-    </section>
 
-    <!-- Brain Oxygenation Heatmap: Hidden Depths -->
-    <section id="brain-oxygenation" class="scroll-section">
-      <h2>Hidden Depths: Brain Oxygenation</h2>
-      <p>
-        While blood pressure and flow are important, what your brain truly needs is oxygen. Our near-infrared spectroscopy (NIRS) measurements reveal how oxygen levels change throughout different regions of your brain during positional changes.
-      </p>
-      <p>
-        Use the slider below to explore how oxygen concentration changes over time across 16 different brain regions. Notice how some areas may show different patterns than others—this reflects your brain's sophisticated blood flow regulation system.
-      </p>
-      <div class="controls">
-        <input type="range" id="oxygen-slider" min="0" max="100" value="0">
-        <span id="time-indicator">Time: Resting Phase</span>
-      </div>
-      <div id="brainOxygenationChart"></div>
-      <div class="oxygenation-insight">
-        <p><strong>Regional Differences:</strong> Notice how frontal brain regions (channels 1-4) may show different oxygenation patterns compared to temporal regions (channels 9-12). These differences reflect your brain's ability to prioritize blood flow to its most critical areas.</p>
-      </div>
-    </section>
+   <!-- Introduction: The Challenge -->
+   <section id="introduction">
+     <h2>The Challenge: Gravity's Constant Pull</h2>
+     <p>
+       At rest, your body operates in a state of calm equilibrium, where your heart, blood vessels, and brain work in harmony to maintain steady blood flow.
+      
+     <p>
+       But when you rise from a seated or lying position, that tranquility is abruptly disrupted—gravity pulls blood toward your feet, creating an immediate challenge for your cardiovascular system.
+     </p>
 
-    <!-- Animated Physiological Journey: Step by Step -->
-    <section id="animated-journey" class="scroll-section">
-      <h2>Step by Step: The Animated Journey</h2>
-      <p>
-        Let's put it all together and watch your body's remarkable journey through the entire sit-stand-sit cycle. This animation integrates blood pressure, brain blood flow, and respiratory patterns to show the coordinated response of your cardiorespiratory-cerebrovascular network.
-      </p>
-      <p>
-        Press play to see the dynamic changes unfold. Pay attention to the timing of changes—how quickly your heart responds, how your brain blood flow recovers, and how your breathing pattern adjusts to support these changes.
-      </p>
-      <div class="controls">
-        <button id="play-btn">Play</button>
-        <button id="pause-btn">Pause</button>
-        <span id="animation-time">Time: 0s</span>
-      </div>
-      <div id="animatedJourneyChart"></div>
-      <div id="journey-text" class="annotation">
-        <p>Watch as the animation progresses through each phase of the positional change. Key events will be highlighted as they occur.</p>
-      </div>
-    </section>
 
-    <!-- Your Personal Profile: Compare Your Baseline -->
-    <section id="personal-profile" class="scroll-section">
-      <h2>Your Personal Profile: How Do You Compare?</h2>
-      <p>
-        Remember the baseline measurements you entered at the beginning? Now let's see how your resting blood pressure and heart rate compare to our study participants and what this might mean for your orthostatic response.
-      </p>
-      <p>
-        While everyone's body responds to positional changes, the magnitude and speed of response can vary based on factors like age, fitness level, hydration status, and overall cardiovascular health.
-      </p>
-      <div id="profileChart"></div>
-      <div class="profile-insight">
-        <p id="personal-insight">Your personal insight will appear here after you submit your baseline measurements.</p>
-      </div>
-    </section>
+     </p>
+     <p>
+       That brief drop in blood pressure may cause lightheadedness as your body quickly activates compensatory mechanisms to restore proper blood flow.
+     </p>
+     <p>
+       Our study captured these dynamics in real time. Let’s explore the intricate dance between blood pressure, brain blood flow, and your body’s resilience.
+     </p>
+   </section>
 
-    <!-- Gamified Quiz: Test Your Understanding -->
-    <section id="quiz" class="scroll-section">
-      <h2>Test Your Understanding: Interactive Quiz</h2>
-      <p>
-        Now that you've explored the data, let's test your understanding. Based on what you've learned, what typically happens to brain blood flow immediately after standing up?
-      </p>
-      <div class="quiz-question">
-        <p>When a healthy person stands up quickly, cerebral blood flow velocity initially:</p>
-      </div>
-      <div class="controls">
-        <button id="quiz-up">Increases</button>
-        <button id="quiz-down">Decreases</button>
-        <button id="quiz-steady">Stays Steady</button>
-      </div>
-      <div id="quizResult" class="annotation"></div>
-    </section>
 
-    <!-- Conclusion: Takeaway -->
-    <section id="conclusion">
-      <h2>The Remarkable Balance: Your Body's Hidden Resilience</h2>
-      <p>
-        Every time you stand up, your body orchestrates a complex physiological response involving your heart, blood vessels, lungs, and brain. This intricate dance happens automatically, without conscious effort, protecting your brain from potentially dangerous drops in blood flow.
-      </p>
-      <p>
-        For most healthy individuals, this system works flawlessly. However, understanding these mechanisms can help explain why some people experience dizziness upon standing—particularly older adults, those on certain medications, or individuals with autonomic nervous system disorders.
-      </p>
-      <p>
-        This exploration reveals just one example of your body's remarkable resilience—a constant balancing act that maintains homeostasis despite the challenges of gravity and positional changes. By visualizing these hidden processes, we gain appreciation for the sophisticated regulatory systems that keep us functioning every day.
-      </p>
-      <div class="project-links">
-        <p>
-          <strong>Project Video:</strong>
-          <a href="https://youtu.be/your-public-video" target="_blank">Watch our 2-minute demo</a>
-        </p>
-        <p>
-          <strong>GitHub Repository:</strong>
-          <a href="https://github.com/your-repo" target="_blank">View on GitHub</a>
-        </p>
-      </div>
-    </section>
+   <!-- Time Series Explorer: A 30-Minute Chronology of Physiological Adaptation -->
+   <section id="time-series-explorer" class="scroll-section">
+     <h2>Real-Time Response: A 30-Minute Chronology of Rest, Standing, and Sitting</h2>
+     <p>
+       This visualization tracks a full 30-minute journey through your body's natural state. It starts with a stable resting period, then captures the dynamic transition as you stand up, and finally follows the return to sitting.
+     </p>
 
-    <!-- Footer -->
-    <footer>
-      <p>Dataset: Two-tiered response of cardiorespiratory-cerebrovascular networks to orthostatic challenge</p>
-      <p>Created for DSC 106 Final Project | UC San Diego</p>
-    </footer>
-  </div>
-  <script src="main.js"></script>
+
+     <p>
+     Notice the subtle decline in blood pressure as you stand—a direct consequence of gravity—and observe how your brain swiftly compensates to restore adequate blood flow. Each phase reveals the intricate regulatory processes keeping you balanced.
+     </p>
+
+
+     <div class="controls">
+       <label><input type="checkbox" id="bp-check" checked> Blood Pressure</label>
+       <label><input type="checkbox" id="rbfv-check" checked> Right Brain Blood Flow</label>
+       <label><input type="checkbox" id="lbfv-check" checked> Left Brain Blood Flow</label>
+     </div>
+     <div id="timeSeriesChart" aria-label="Time series chart showing physiological changes"></div>
+     <div class="annotation" id="ts-annotation">
+       <p><strong>Insight:</strong> Observe how your blood pressure dips briefly upon standing—triggering a rapid compensatory response in brain blood flow—to maintain balance during the transition from rest to movement.</p>
+     </div>
+   </section>
+
+
+   <!-- Phase-Specific Summary Dashboard: Moments of Change -->
+   <section id="phase-summary" class="scroll-section">
+     <h2>Three Critical Phases: Rest, Stand, Sit</h2>
+     <p>
+       Each phase of movement triggers a unique response in your body. Compare these phases to see how your cardiovascular system adapts—from a steady state, to rapid compensation, and back to baseline.
+     </p>
+     <div class="controls">
+       <button id="phase-rest" class="phase-btn active">Rest</button>
+       <button id="phase-stand" class="phase-btn">Stand-Up</button>
+       <button id="phase-sit" class="phase-btn">Sit-Down</button>
+     </div>
+     <div id="phaseSummaryChart" aria-label="Bar chart summarizing phase averages"></div>
+     <div class="phase-explanation">
+       <p><strong>Rest Phase:</strong> Stable measurements indicate minimal fluctuations.</p>
+       <p><strong>Stand-Up Phase:</strong> Notice the rapid compensatory responses in heart rate and blood flow.</p>
+       <p><strong>Sit-Down Phase:</strong> Your body readjusts—sometimes causing a temporary spike before stabilizing.</p>
+     </div>
+   </section>
+
+
+   <!-- Correlation Explorer: The Dynamic Duo -->
+   <section id="correlation-explorer" class="scroll-section">
+     <h2>The Dynamic Duo: Pressure & Flow</h2>
+     <p>
+       Explore the relationship between blood pressure and brain blood flow. A trend line and correlation indicator help reveal how actively your brain maintains stable blood flow despite pressure changes.
+     </p>
+     <div class="controls">
+       <select id="var1-select">
+         <option value="Blood_pressure">Blood Pressure</option>
+         <option value="right_MCA_BFV">Right Brain Blood Flow</option>
+         <option value="left_MCA_BFV">Left Brain Blood Flow</option>
+       </select>
+       <select id="var2-select">
+         <option value="right_MCA_BFV">Right Brain Blood Flow</option>
+         <option value="Blood_pressure">Blood Pressure</option>
+         <option value="left_MCA_BFV">Left Brain Blood Flow</option>
+       </select>
+     </div>
+     <div id="correlationChart" aria-label="Scatter plot showing correlation between two measurements"></div>
+     <div class="correlation-insight">
+       <p><strong>What It Means:</strong> The regression line and correlation coefficient illustrate that while the variables are related, your brain actively regulates the flow to keep it stable.</p>
+     </div>
+   </section>
+
+
+   <!-- Your Personal Profile: Compare Your Baseline -->
+   <section id="personal-profile" class="scroll-section">
+     <h2>Your Personal Profile: How Do You Compare?</h2>
+     <p>
+       Compare your resting blood pressure to the dataset average. Not only will you see the difference, but you’ll also learn where you rank within our study.
+     </p>
+     <div id="profileChart" aria-label="Bar chart comparing personal and dataset values"></div>
+     <div class="profile-insight">
+       <p id="personal-insight">After you submit your measurements, personalized feedback—including your percentile ranking—will appear here.</p>
+     </div>
+
+
+     <!-- Embed the smaller body visualization here -->
+     <h3>Explore Your Body’s Response</h3>
+     <p>
+       Use the slider below to simulate a 30-minute timeline. Observe how your heart rate,
+       blood pressure, and brain flow might change in each phase—rest, stand, and sit.
+     </p>
+     <div id="mini-body-visualization" class="body-container" style="max-width: 250px; margin: 0 auto;">
+       <svg id="humanSVG" viewBox="0 0 200 400" width="120" height="240">
+         <!-- Head (with brain overlay) -->
+         <circle id="head" cx="100" cy="50" r="30" fill="#f5c6cb" stroke="#333" />
+         <ellipse id="brain" cx="100" cy="50" rx="20" ry="15" fill="#3498db" opacity="0.5" />
+        
+         <!-- Body -->
+         <rect id="body" x="80" y="80" width="40" height="100" fill="#f5c6cb" stroke="#333" />
+        
+         <!-- Heart icon -->
+         <path id="heart"
+           d="M100,120 C90,110 70,110 70,130 C70,150 100,170 100,170
+              C100,170 130,150 130,130 C130,110 110,110 100,120 Z"
+           fill="#e74c3c" />
+        
+         <!-- Legs -->
+         <line id="left-leg" x1="90" y1="180" x2="90" y2="240" stroke="#333" stroke-width="5" />
+         <line id="right-leg" x1="110" y1="180" x2="110" y2="240" stroke="#333" stroke-width="5" />
+       </svg>
+
+
+       <div class="slider-container" style="margin-top: 15px;">
+         <input type="range" id="timeSlider" min="0" max="1800" value="0" style="width: 100%;">
+         <p style="text-align: center;">Time: <span id="sliderTime">0</span> sec</p>
+       </div>
+
+
+       <div id="bodyInfo" style="text-align: center;">
+         <p>Heart Rate: <span id="heartRate">70</span> bpm</p>
+         <p>Blood Pressure: <span id="bloodPressure">120/80</span> mmHg</p>
+         <p>Brain Flow: <span id="brainFlow">100</span> ml/min</p>
+       </div>
+     </div>
+   </section>
+
+
+   <!-- Gamified Quiz: Test Your Understanding -->
+   <section id="quiz-section" class="scroll-section">
+     <h2>Test Your Knowledge</h2>
+     <p>
+       Now that you’ve explored the data, test your understanding of how your body responds to positional changes.
+     </p>
+     <div id="quiz-container" class="quiz-container" aria-label="Quiz section">
+       <div class="quiz-section">
+         <div class="quiz-question">
+           <h4>Question 1: What typically happens to blood pressure immediately after standing?</h4>
+           <div class="quiz-options">
+             <button class="quiz-btn" data-feedback="✗ Not quite. Blood pressure typically drops briefly when standing due to gravity.">It increases</button>
+             <button class="quiz-btn" data-correct="true" data-feedback="✓ Correct! Blood pressure initially drops due to gravity's effect.">It decreases</button>
+             <button class="quiz-btn" data-feedback="✗ Incorrect. There's a noticeable change in blood pressure when standing.">It stays the same</button>
+           </div>
+           <div class="quiz-result"></div>
+         </div>
+         <div class="quiz-question">
+           <h4>Question 2: When you stand up, what happens to brain blood flow velocity (BFV)?</h4>
+           <div class="quiz-options">
+             <button class="quiz-btn" data-correct="true" data-feedback="✓ Correct! BFV increases to help maintain brain perfusion.">It increases</button>
+             <button class="quiz-btn" data-feedback="✗ Not quite. BFV typically rises rather than drops.">It decreases</button>
+             <button class="quiz-btn" data-feedback="✗ Not quite. There's a significant change when standing.">It stays the same</button>
+           </div>
+           <div class="quiz-result"></div>
+         </div>
+         <div class="quiz-question">
+           <h4>Question 3: What's the relationship between blood pressure and brain blood flow?</h4>
+           <div class="quiz-options">
+             <button class="quiz-btn" data-feedback="✗ Not exactly. While they're related, it's not a simple direct relationship.">Directly proportional</button>
+             <button class="quiz-btn" data-feedback="✗ Not quite. They don't always move in opposite directions.">Inversely proportional</button>
+             <button class="quiz-btn" data-correct="true" data-feedback="✓ Correct! They share a complex relationship governed by regulatory mechanisms.">Complex relationship</button>
+           </div>
+           <div class="quiz-result"></div>
+         </div>
+         <div class="quiz-question">
+           <h4>Question 4: Why is the initial drop in blood pressure when standing up potentially dangerous?</h4>
+           <div class="quiz-options">
+             <button class="quiz-btn" data-correct="true" data-feedback="✓ Correct! The drop can trigger dizziness or fainting in some individuals.">It can cause fainting</button>
+             <button class="quiz-btn" data-feedback="✗ Not quite. Blood pressure changes rarely damage vessels directly.">It damages blood vessels</button>
+             <button class="quiz-btn" data-feedback="✗ Incorrect. The drop can indeed be dangerous, especially in vulnerable individuals.">It has no real danger</button>
+           </div>
+           <div class="quiz-result"></div>
+         </div>
+       </div>
+     </div>
+   </section>
+  
+   <!-- Conclusion: Takeaway -->
+   <section id="conclusion">
+     <h2>The Remarkable Balance: Your Body's Hidden Resilience</h2>
+     <p>
+       Every time you stand up, your body orchestrates a sophisticated response involving your heart, blood vessels, lungs, and brain. Understanding these mechanisms helps explain why you might feel a momentary lightheadedness—and why your body works so hard to keep you safe.
+     </p>
+     <p>
+       This interactive journey is a glimpse into the resilience built into your physiology, ensuring that even when gravity challenges you, your body responds with remarkable precision.
+     </p>
+     <div class="project-links">
+       <p>
+         <strong>Project Video:</strong>
+         <a href="https://youtube.com/video/gHGVtO3crK4" target="_blank">Watch our 2-minute demo</a>
+       </p>
+       <p>
+         <strong>GitHub Repository:</strong>
+         <a href="https://github.com/kagastyaraju/DSC106FInalproject" target="_blank">View on GitHub</a>
+       </p>
+     </div>
+   </section>
+
+
+   <!-- Footer -->
+   <footer>
+     <p>Dataset: Two-tiered response of cardiorespiratory-cerebrovascular networks to orthostatic challenge</p>
+     <p>Created for DSC 106 Final Project | UC San Diego</p>
+   </footer>
+ </div>
+ <script src="main.js"></script>
 </body>
 </html>
