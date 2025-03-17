@@ -131,7 +131,7 @@ d3.csv("combined_data.csv", d => {
   function updateTimeSeries(subject) {
     const svg = d3.select("#timeSeriesChart").html("")
       .append("svg")
-      .attr("width", width + margin.left + margin.right + 100)
+      .attr("width", width + margin.left + margin.right + 100) // Increased width for legend
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
@@ -140,18 +140,20 @@ d3.csv("combined_data.csv", d => {
     const x = d3.scaleLinear().domain(d3.extent(subjectData, d => d.Time)).range([0, width]);
     const y = d3.scaleLinear().domain([0, d3.max(subjectData, d => Math.max(d.Blood_pressure, d.right_MCA_BFV, d.left_MCA_BFV, d.resp_uncalibrated))]).range([height, 0]);
 
-    // Determine phase transitions (fallbacks added)
+    // Define phase boundaries based on the data
     const phaseTransitions = {
       restToStand: subjectData.find(d => d.Phase === "Standing")?.Time || (x.domain()[0] + (x.domain()[1] - x.domain()[0]) * 0.4),
       standToSit: subjectData.find(d => d.Phase === "Sitting")?.Time || (x.domain()[0] + (x.domain()[1] - x.domain()[0]) * 0.7)
     };
 
+    // Define the phases with actual time values
     const phases = [
       { name: "Rest Phase", start: x.domain()[0], end: phaseTransitions.restToStand, color: "rgba(200, 230, 200, 0.3)" },
       { name: "Stand-Up Phase", start: phaseTransitions.restToStand, end: phaseTransitions.standToSit, color: "rgba(230, 200, 200, 0.3)" },
       { name: "Sit-Down Phase", start: phaseTransitions.standToSit, end: x.domain()[1], color: "rgba(200, 200, 230, 0.3)" }
     ];
 
+    // Add background highlights for each phase
     phases.forEach(phase => {
       svg.append('rect')
         .attr('x', x(phase.start))
@@ -162,6 +164,10 @@ d3.csv("combined_data.csv", d => {
         .attr('class', 'phase-highlight');
     });
     
+    // Remove the phase labels from the top of the chart
+    // (We'll add them to the legend instead)
+
+    // Create ticks at 5-minute intervals (300 seconds) and ensure final tick is the domain end
     const tickInterval = 300;
     const domainStart = x.domain()[0];
     const domainEnd = x.domain()[1];
@@ -169,12 +175,15 @@ d3.csv("combined_data.csv", d => {
     let tickValues = d3.range(tickStart, domainEnd, tickInterval);
     tickValues.push(domainEnd);
 
+    // Define lines to plot with corresponding checkbox IDs
     const lines = [
         { key: "Blood_pressure", color: "#e74c3c", id: "bp-check", label: "Blood Pressure"},
         { key: "right_MCA_BFV", color: "#3498db", id: "rbfv-check", label: "Right Brain Blood Flow"},
-        { key: "left_MCA_BFV", color: "#c842f5", id: "lbfv-check", label: "Left Brain Blood Flow"}
+        { key: "left_MCA_BFV", color: "#c842f5", id: "lbfv-check", label: "Left Brain Blood Flow"},
+        // { key: "resp_uncalibrated", color: "#2ecc71", id: "resp-check", label: "Respiratory Pattern"}
       ];
 
+    // For each variable, check if its checkbox is checked before drawing its line
     lines.forEach(line => {
       if (d3.select(`#${line.id}`).property("checked")) {
         svg.append("path")
@@ -187,7 +196,7 @@ d3.csv("combined_data.csv", d => {
       }
     });
 
-    // Enhanced tooltip with contextual message
+    // Add tooltip container
     const tooltip = d3.select("body").append("div")
       .attr("class", "tooltip")
       .style("opacity", 0)
@@ -200,6 +209,7 @@ d3.csv("combined_data.csv", d => {
       .style("font-size", "12px")
       .style("box-shadow", "0 2px 4px rgba(0,0,0,0.1)");
 
+    // Add invisible overlay for tooltip interaction
     const bisect = d3.bisector(d => d.Time).left;
     
     svg.append("rect")
@@ -215,6 +225,7 @@ d3.csv("combined_data.csv", d => {
         const d1 = subjectData[i] || d0;
         const d = x0 - d0.Time > d1.Time - x0 ? d1 : d0;
         
+        // Position the tooltip
         tooltip
           .style("opacity", 0.9)
           .style("left", (event.pageX + 10) + "px")
@@ -222,12 +233,15 @@ d3.csv("combined_data.csv", d => {
           .html(`
             <strong>Time:</strong> ${(d.Time / 60).toFixed(1)} min<br>
             <strong>Phase:</strong> ${d.Phase}<br>
-            ${d3.select("#bp-check").property("checked") ? `<span style="color: #e74c3c">BP: ${d.Blood_pressure.toFixed(1)} mmHg</span><br>` : ""}
-            ${d3.select("#rbfv-check").property("checked") ? `<span style="color: #3498db">Right BFV: ${d.right_MCA_BFV.toFixed(1)}</span><br>` : ""}
-            ${d3.select("#lbfv-check").property("checked") ? `<span style="color: #c842f5">Left BFV: ${d.left_MCA_BFV.toFixed(1)}</span>` : ""}
-            <br><em>This dip is due to gravity pulling blood downward—observe how recovery begins immediately.</em>
+            ${d3.select("#bp-check").property("checked") ? 
+              `<span style="color: #e74c3c">BP: ${d.Blood_pressure.toFixed(1)} mmHg</span><br>` : ""}
+            ${d3.select("#rbfv-check").property("checked") ? 
+              `<span style="color: #3498db">Right BFV: ${d.right_MCA_BFV.toFixed(1)}</span><br>` : ""}
+            ${d3.select("#lbfv-check").property("checked") ? 
+              `<span style="color: #c842f5">Left BFV: ${d.left_MCA_BFV.toFixed(1)}</span>` : ""}
           `);
           
+        // Add a vertical line at mouse position
         svg.selectAll(".tooltip-line").remove();
         svg.append("line")
           .attr("class", "tooltip-line")
@@ -244,6 +258,7 @@ d3.csv("combined_data.csv", d => {
         svg.selectAll(".tooltip-line").remove();
       });
 
+    // Add vertical lines at phase transitions but without text labels
     svg.append('line')
       .attr('x1', x(phaseTransitions.restToStand))
       .attr('x2', x(phaseTransitions.restToStand))
@@ -262,6 +277,7 @@ d3.csv("combined_data.csv", d => {
       .attr('stroke-width', 1.5)
       .attr('stroke-dasharray', '5,5');
 
+    // Draw x axis with tick labels in minutes
     svg.append("g")
       .attr("transform", `translate(0,${height})`)
       .call(d3.axisBottom(x)
@@ -276,6 +292,7 @@ d3.csv("combined_data.csv", d => {
       .style("font-weight", "bold")
       .text("Time (minutes)");
 
+    // Draw y axis
     svg.append("g")
       .call(d3.axisLeft(y))
       .append("text")
@@ -286,10 +303,14 @@ d3.csv("combined_data.csv", d => {
       .attr("text-anchor", "middle")
       .text("Value");
 
+    // Create a unified legend container positioned further to the right
     const legendContainer = svg.append('g')
-      .attr('transform', `translate(${width + 40}, 10)`);
+      .attr('transform', `translate(${width + 40}, 10)`); // Adjusted position for more space
     
+    // Add measurement legend
     const measurementLegend = legendContainer.append('g');
+    
+    // Add title for measurements
     measurementLegend.append('text')
       .attr('x', 0)
       .attr('y', 0)
@@ -297,9 +318,10 @@ d3.csv("combined_data.csv", d => {
       .style('font-size', '12px')
       .text('Measurements:');
     
+    // Add measurement items to legend with increased spacing
     lines.forEach((line, i) => {
       const g = measurementLegend.append('g')
-        .attr('transform', `translate(0, ${i * 25 + 20})`);
+        .attr('transform', `translate(0, ${i * 25 + 20})`); // Increased vertical spacing
       
       g.append('line')
         .attr('x1', 0)
@@ -316,6 +338,7 @@ d3.csv("combined_data.csv", d => {
         .text(line.label);
     });
     
+    // Add phase legend below measurement legend
     const phaseLegend = legendContainer.append('g')
       .attr('transform', `translate(0, ${lines.length * 20 + 30})`);
     
@@ -326,6 +349,7 @@ d3.csv("combined_data.csv", d => {
       .style('font-size', '12px')
       .text('Phases:');
     
+    // Add phase items to legend
     phases.forEach((phase, i) => {
       const g = phaseLegend.append('g')
         .attr('transform', `translate(0, ${i * 20 + 15})`);
@@ -344,6 +368,7 @@ d3.csv("combined_data.csv", d => {
         .text(phase.name);
     });
     
+    // Add transition markers to legend
     const transitionLegend = legendContainer.append('g')
       .attr('transform', `translate(0, ${lines.length * 20 + phases.length * 20 + 60})`);
     
@@ -354,6 +379,7 @@ d3.csv("combined_data.csv", d => {
       .style('font-size', '12px')
       .text('Transitions:');
     
+    // Stand Up transition
     const standUpG = transitionLegend.append('g')
       .attr('transform', 'translate(0, 15)');
     
@@ -372,6 +398,7 @@ d3.csv("combined_data.csv", d => {
       .style('font-size', '11px')
       .text('Stand Up');
     
+    // Sit Down transition
     const sitDownG = transitionLegend.append('g')
       .attr('transform', 'translate(0, 35)');
     
@@ -409,9 +436,12 @@ d3.csv("combined_data.csv", d => {
     }
 
     d3.select("#ts-annotation").html(`
-      <p><strong>What You're Seeing:</strong> This graph shows the rapid dip in blood pressure upon standing—caused by gravity—and how brain blood flow recovers immediately.</p>
+      <p><strong>What You're Seeing:</strong> This graph shows how your body responds to standing up and sitting down. 
+      When you stand, notice how blood pressure initially dips, followed by a compensatory increase in brain blood flow. 
+      This brief delay reveals the critical moments when your body works to maintain brain perfusion despite gravity's challenge.</p>
     `);
   }
+
 
   function updatePhaseSummary(subject, phase) {
     const svg = d3.select("#phaseSummaryChart").html("")
@@ -421,50 +451,35 @@ d3.csv("combined_data.csv", d => {
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
+    // Filter data for the selected subject across all phases
     const subjectData = data.filter(d => d.Subject === subject);
     const phaseData = subjectData.filter(d => d.Phase === phase);
     
-    // Grouped bar chart: using two measures (dataset average & user value) for Blood Pressure
-    const avgBP = d3.mean(phaseData, d => d.Blood_pressure);
-    const bpValues = phaseData.map(d => d.Blood_pressure);
-    const rank = bpValues.filter(v => userBP && (v < userBP)).length;
-    const percentile = userBP ? ((rank / bpValues.length) * 100).toFixed(1) : "N/A";
-    
-    const bars = [
-      { label: "Dataset Avg BP", value: avgBP },
-      { label: "Your Resting BP", value: userBP }
-    ];
-    
-    const x = d3.scaleBand().domain(bars.map(d => d.label)).range([0, width]).padding(0.4);
-    const yScale = d3.scaleLinear().domain([0, d3.max(bars, d => d.value)]).range([height, 0]);
+    // Filter out "resp_uncalibrated" from measurements
+    const filteredMeasurements = measurements.filter(m => m !== "resp_uncalibrated");
+
+    const averages = filteredMeasurements.map(m => ({ key: m, value: d3.mean(phaseData, d => d[m]) }));
+
+    // Calculate the maximum value for the y-axis scale based on the entire subject data
+    const maxValue = d3.max(subjectData, d => Math.max(d.Blood_pressure, d.right_MCA_BFV, d.left_MCA_BFV));
+
+    const x = d3.scaleBand().domain(filteredMeasurements).range([0, width]).padding(0.1);
+    const yScale = d3.scaleLinear().domain([0, maxValue / 1.5]).range([height, 0]); // Use maxValue from all phases
 
     svg.selectAll(".bar")
-      .data(bars)
+      .data(averages)
       .enter()
       .append("rect")
-      .attr("class", "bar")
-      .attr("x", d => x(d.label))
+      .attr("x", d => x(d.key))
       .attr("y", d => yScale(d.value))
       .attr("width", x.bandwidth())
       .attr("height", d => height - yScale(d.value))
-      .attr("fill", d => d.label === "Your Resting BP" ? "#8e44ad" : "#3498db");
+      .attr("fill", "#3498db");
 
     svg.append("g").attr("transform", `translate(0,${height})`).call(d3.axisBottom(x));
     svg.append("g").call(d3.axisLeft(yScale));
+}
 
-    svg.selectAll("text.label")
-      .data(bars)
-      .enter()
-      .append("text")
-      .attr("class", "label")
-      .attr("x", d => x(d.label) + x.bandwidth() / 2)
-      .attr("y", d => yScale(d.value) - 5)
-      .attr("text-anchor", "middle")
-      .text(d => d.value ? d.value.toFixed(1) + " mmHg" : "N/A");
-    
-    // Add personalized feedback below the chart
-    d3.select("#profile-feedback").html(userBP ? `<p>Your resting BP is in the ${percentile} percentile of the dataset.</p>` : "");
-  }
 
   // --- Correlation Explorer ---
   function updateCorrelation(subject, var1, var2) {
