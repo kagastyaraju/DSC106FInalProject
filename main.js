@@ -23,7 +23,7 @@ const fixedSelectorContainer = d3.select("body")
 
 fixedSelectorContainer.append("label")
   .attr("for", "fixed-select")
-  .text("Participant: ")
+  .text("Participant ")
   .style("font-weight", "bold")
   .style("margin-right", "5px");
 
