@@ -765,9 +765,52 @@ document.addEventListener('DOMContentLoaded', function() {
             standFigure.style.opacity = '1';
             setTimeout(() => {
               transitionToStep(2, 3);
-              setTimeout(() => {
-                transitionToStep(3, 4);
-              }, 5000);
+              
+              // Add event listeners to feeling options
+              const feelingOptions = document.querySelectorAll('#intro-step-3 .feeling-option');
+              
+              // If no elements with class 'feeling-option' exist, add listeners to any clickable elements in step 3
+              if (feelingOptions.length === 0) {
+                const step3 = document.getElementById('intro-step-3');
+                const clickableElements = step3.querySelectorAll('button, .btn, [role="button"]');
+                
+                clickableElements.forEach(element => {
+                  element.addEventListener('click', function() {
+                    // Highlight the selected option if possible
+                    clickableElements.forEach(el => el.classList.remove('selected'));
+                    this.classList.add('selected');
+                    
+                    // Proceed to next step
+                    setTimeout(() => {
+                      transitionToStep(3, 4);
+                    }, 800);
+                  });
+                });
+                
+                // Fallback: If no clickable elements found, add click listener to the entire step
+                if (clickableElements.length === 0) {
+                  step3.addEventListener('click', function() {
+                    setTimeout(() => {
+                      transitionToStep(3, 4);
+                    }, 800);
+                  });
+                }
+              } else {
+                // Original code for when .feeling-option elements exist
+                feelingOptions.forEach(option => {
+                  option.addEventListener('click', function() {
+                    // Highlight the selected option
+                    feelingOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    
+                    // Wait a moment before proceeding to next step
+                    setTimeout(() => {
+                      transitionToStep(3, 4);
+                    }, 800);
+                  });
+                });
+              }
+              
             }, 2000);
           }, 500);
         }, 1000);
