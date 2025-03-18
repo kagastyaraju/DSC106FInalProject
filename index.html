@@ -15,14 +15,14 @@
       
       <!-- Step 0: Introduction -->
       <div class="intro-step" id="intro-step-0">
-        <p class="intro-text">Watch closely as we show you how your body responds to the force of gravity when you stand up!</p>
+        <p class="intro-text">Watch closely to learn how your body responds to the force of gravity when you stand up!</p>
         <p class="intro-instruction">This interactive experience will guide you through a simple, revealing experiment.</p>
         <button id="start-experiment" class="pulse-button" aria-label="Start experiment">Start Experiment</button>
       </div>
       
       <!-- Step 1: Preparation -->
       <div class="intro-step hidden" id="intro-step-1">
-        <p class="intro-text">Sit comfortably for 10 seconds. Notice your calm, steady state...</p>
+        <p class="intro-text">Sit comfortably at rest for 10 seconds. Notice your calm, steady state...</p>
         <div class="progress-bar">
           <div class="progress-fill" id="sit-progress"></div>
         </div>
@@ -83,7 +83,7 @@
         At rest, your body operates in a state of calm equilibrium, where your heart, blood vessels, and brain work in harmony to maintain steady blood flow. 
         
       <p>
-        But when you rise from a seated or lying position, that tranquility is disrupted, as gravity pulls blood toward your feet, causing your blood pressure to drop in a phenomenon called orthostatic hypotension. 
+        But when you rise from a seated or lying position, gravity pulls blood toward your feet, disrupting that tranquility and causing your blood pressure to drop in a phenomenon called orthostatic hypotension. 
       </p>
 
       </p>
@@ -103,7 +103,7 @@
      <!-- User Profile Input -->
      <section id="user-profile">
       <h2>Personalize Your Experience</h2>
-      <p>Enter your resting blood pressure to see how your body might respond to standing up, and compare your values to our study participants. Use the numbers provided if you don't your own values.
+      <p>Enter your resting blood pressure to see how your body might respond to standing up, and compare your values to our study participants. Use the value provided if you don't your own.
       </p>
       <form id="profile-form">
         <label for="user-bp">Resting Blood Pressure (mmHg):</label>
@@ -117,7 +117,7 @@
     <section id="time-series-explorer" class="scroll-section">
       <h2>Real-Time Response: 30 Minutes of Rest, Standing, and Sitting</h2>
       <p>
-        This visualization tracks subjects' journey through 30 minutes of resting, followed by shorter periods of standing and sitting. It starts with a stable resting period, then captures the dynamic transition as you stand up, and finally follows the return to sitting. 
+        This visualization tracks subjects' measurements over the course of 30 minutes of resting, followed by shorter periods of standing and sitting. It captures the dynamic transition as you stand up and return to a resting state. 
       </p>
 
       <p>
@@ -152,7 +152,7 @@
       <div id="phaseSummaryChart"></div>
       <div class="phase-explanation">
         <p><strong>Rest Phase (0-1860s):</strong> During rest, your cardiovascular system maintains a steady state with minimal fluctuations in blood pressure and cerebral blood flow.</p>
-        <p><strong>Stand-Up Phase (1860-1920s):</strong> Upon standing, your body activates multiple compensatory mechanisms—your heart rate increases, blood vessels constrict, and your breathing pattern may change to help stabilize blood pressure.</p>
+        <p><strong>Stand-Up Phase (1800-1920s):</strong> Upon standing, your body activates multiple compensatory mechanisms—your heart rate increases, blood vessels constrict, and your breathing pattern may change to help stabilize blood pressure.</p>
         <p><strong>Sit-Down Phase (1920-1980s):</strong> When sitting back down, your body must readjust again as blood flow patterns reverse, sometimes causing a temporary blood pressure spike before returning to baseline.</p>
       </div>
     </section>
@@ -177,7 +177,8 @@
       </div>
       <div id="correlationChart" aria-label="Scatter plot showing correlation between two measurements"></div>
       <div class="correlation-insight">
-        <p><strong>What It Means:</strong> The regression line and correlation coefficient illustrate that while the variables are related, your brain actively regulates the flow to keep it stable.</p>
+        <p><strong>What It Means:</strong> While blood pressure fluctuates during movement, your brain’s blood flow remains remarkably steady. This stability shows that your body actively regulates blood flow to the brain, 
+          ensuring it consistently receives the oxygen and nutrients it needs—even during dynamic shifts. It’s a clear demonstration of your cardiovascular system’s resilience and adaptability.</p>
       </div>
     </section>
 
@@ -189,7 +190,7 @@
       </p>
       <div id="profileChart" aria-label="Bar chart comparing personal and dataset values"></div>
       <div class="profile-insight">
-        <p id="personal-insight">After you submit your measurements, personalized feedback—including your percentile ranking—will appear here.</p>
+        <p id="personal-insight"></p>
       </div>
 
 
@@ -197,7 +198,7 @@
     <section id="quiz-section" class="scroll-section">
       <h2>Test Your Knowledge</h2>
       <p>
-        Now that you’ve explored the data, test your understanding of how your body responds to positional changes.
+        Now that you’ve explored the data, let's test your understanding of how your body responds to positional changes with a quiz!
       </p>
       <div id="quiz-container" class="quiz-container" aria-label="Quiz section">
         <div class="quiz-section">
@@ -244,11 +245,11 @@
     <!-- Conclusion: Takeaway -->
     <section id="conclusion">
       <h2>The Remarkable Balance: Your Body's Hidden Resilience</h2>
-x      <p>
-        Every time you stand up, your body orchestrates a sophisticated response involving your heart, blood vessels, lungs, and brain. Understanding these mechanisms helps explain why you might feel a momentary lightheadedness—and why your body works so hard to keep you safe.
+      <p>
+        Every time you stand up, gravity challenges your body by briefly lowering your blood pressure. Yet, thanks to a sophisticated network of automatic regulatory mechanisms, your brain continues to receive a stable flow of blood.
       </p>
       <p>
-        This interactive journey is a glimpse into the resilience built into your physiology, ensuring that even when gravity challenges you, your body responds with remarkable precision.
+        The main takeaway from this project is that even when external forces disrupt your equilibrium, your body is incredibly strong and designed to protect its most vital functions. Our story clearly demonstrates this by showing that, despite a dip in blood pressure, brain blood flow remains remarkably constant. This real-time depiction of your body's dynamic balance powerfully illustrates its extraordinary resilience and underscores the human body's amazing inherent strength.
       </p>
       <div class="project-links">
         <p>
