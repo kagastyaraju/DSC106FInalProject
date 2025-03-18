@@ -5,7 +5,7 @@ const height = 400 - margin.top - margin.bottom;
 
 // Global variables for user profile and current subject
 let userBP = null;
-let userHR = null;
+// let userHR = null;
 let currentSubject = null;
 
 // Create a fixed position container for the subject selector
@@ -123,7 +123,7 @@ d3.csv("combined_data.csv", d => {
   d3.select("#profile-form").on("submit", function(event) {
     event.preventDefault();
     userBP = +d3.select("#user-bp").property("value");
-    userHR = +d3.select("#user-hr").property("value");
+    // userHR = +d3.select("#user-hr").property("value");
     updateUserProfile();
     updateTimeSeries(currentSubject);
   });
@@ -279,18 +279,22 @@ d3.csv("combined_data.csv", d => {
 
     // Draw x axis with tick labels in minutes
     svg.append("g")
-      .attr("transform", `translate(0,${height})`)
-      .call(d3.axisBottom(x)
-        .tickValues(tickValues)
-        .tickFormat(d => d / 60))
-      .append("text")
-      .attr("x", width / 2)
-      .attr("y", 40)
-      .attr("fill", "#000")
-      .attr("text-anchor", "middle")
-      .style("font-size", "12px")
-      .style("font-weight", "bold")
-      .text("Time (minutes)");
+    .attr("transform", `translate(0,${height})`)
+    .call(d3.axisBottom(x)
+      .tickValues(tickValues)
+      .tickFormat(d => {
+        const minutes = d / 60;
+        return (minutes % 1 === 0) ? minutes : minutes.toFixed(1);
+      }))
+    .append("text")
+    .attr("x", width / 2)
+    .attr("y", 40)
+    .attr("fill", "#000")
+    .attr("text-anchor", "middle")
+    .style("font-size", "12px")
+    .style("font-weight", "bold")
+    .text("Time (minutes)");
+
 
     // Draw y axis
     svg.append("g")
@@ -444,12 +448,17 @@ d3.csv("combined_data.csv", d => {
 
 
   function updatePhaseSummary(subject, phase) {
+    // Increase bottom margin to accommodate labels
+    const phaseMargin = { top: 20, right: 80, bottom: 100, left: 50 };
+    const phaseWidth = width + phaseMargin.left + phaseMargin.right;
+    const phaseHeight = height + phaseMargin.top + phaseMargin.bottom;
+    
     const svg = d3.select("#phaseSummaryChart").html("")
       .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
+      .attr("width", phaseWidth)
+      .attr("height", phaseHeight)
       .append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
+      .attr("transform", `translate(${phaseMargin.left},${phaseMargin.top})`);
 
     // Filter data for the selected subject across all phases
     const subjectData = data.filter(d => d.Subject === subject);
@@ -458,12 +467,23 @@ d3.csv("combined_data.csv", d => {
     // Filter out "resp_uncalibrated" from measurements
     const filteredMeasurements = measurements.filter(m => m !== "resp_uncalibrated");
 
-    const averages = filteredMeasurements.map(m => ({ key: m, value: d3.mean(phaseData, d => d[m]) }));
+    // Create a mapping for display names with units - using shorter labels
+    const displayNames = {
+      "Blood_pressure": "Blood Pressure (mmHg)",
+      "right_MCA_BFV": "Right BBFV (cm/s)",
+      "left_MCA_BFV": "Left BBFV (cm/s)"
+    };
+
+    const averages = filteredMeasurements.map(m => ({ 
+      key: m, 
+      value: d3.mean(phaseData, d => d[m]),
+      displayName: displayNames[m] || m
+    }));
 
     // Calculate the maximum value for the y-axis scale based on the entire subject data
     const maxValue = d3.max(subjectData, d => Math.max(d.Blood_pressure, d.right_MCA_BFV, d.left_MCA_BFV));
 
-    const x = d3.scaleBand().domain(filteredMeasurements).range([0, width]).padding(0.1);
+    const x = d3.scaleBand().domain(filteredMeasurements).range([0, width]).padding(0.2);
     const yScale = d3.scaleLinear().domain([0, maxValue / 1.5]).range([height, 0]); // Use maxValue from all phases
 
     svg.selectAll(".bar")
@@ -476,9 +496,38 @@ d3.csv("combined_data.csv", d => {
       .attr("height", d => height - yScale(d.value))
       .attr("fill", "#3498db");
 
-    svg.append("g").attr("transform", `translate(0,${height})`).call(d3.axisBottom(x));
+    // Update x-axis to use shorter display names with units - now with straight labels
+    svg.append("g")
+      .attr("transform", `translate(0,${height})`)
+      .call(d3.axisBottom(x).tickFormat(d => displayNames[d] || d))
+      .selectAll("text")  
+      .style("text-anchor", "middle")
+      .style("font-size", "11px")
+      .attr("dy", "2em") // Move text down to avoid overlap with axis
+      .attr("transform", "rotate(0)"); // Make labels straight (0 degrees)
+
     svg.append("g").call(d3.axisLeft(yScale));
-}
+    
+    // Add value labels on top of bars
+    svg.selectAll(".value-label")
+      .data(averages)
+      .enter()
+      .append("text")
+      .attr("class", "value-label")
+      .attr("x", d => x(d.key) + x.bandwidth() / 2)
+      .attr("y", d => yScale(d.value) - 5)
+      .attr("text-anchor", "middle")
+      .text(d => d.value.toFixed(1));
+      
+    // Add a title to the chart
+    svg.append("text")
+      .attr("x", width / 2)
+      .attr("y", -5)
+      .attr("text-anchor", "middle")
+      .style("font-size", "14px")
+      .style("font-weight", "bold")
+      .text(`${phase} Phase Measurements`);
+  }
 
 
   // --- Correlation Explorer ---
