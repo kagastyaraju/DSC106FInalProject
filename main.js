@@ -5,7 +5,6 @@ const height = 400 - margin.top - margin.bottom;
 
 // Global variables for user profile and current subject
 let userBP = null;
-// let userHR = null;
 let currentSubject = null;
 
 // Create a fixed position container for the subject selector
@@ -123,7 +122,6 @@ d3.csv("combined_data.csv", d => {
   d3.select("#profile-form").on("submit", function(event) {
     event.preventDefault();
     userBP = +d3.select("#user-bp").property("value");
-    // userHR = +d3.select("#user-hr").property("value");
     updateUserProfile();
     updateTimeSeries(currentSubject);
   });
@@ -678,105 +676,6 @@ d3.csv("combined_data.csv", d => {
   setupScrollytelling();
 });
 
-// =============================
-// New Interactive Human Body Visualization Features
-// =============================
-
-// Function to update the human body visualization based on time (in seconds)
-function updateBodyVisualization(time) {
-  // Update displayed time in the slider info
-  const sliderTimeElem = document.getElementById("sliderTime");
-  if (sliderTimeElem) {
-    sliderTimeElem.textContent = time;
-  }
-  
-  // Define phase thresholds (in seconds):
-  // Rest: 0 - 600 sec (0-10 min)
-  // Stand: 600 - 1200 sec (10-20 min)
-  // Sit: 1200 - 1800 sec (20-30 min)
-  const restPhase = 600;
-  const standPhase = 1200;
-
-  let heartRate, bloodPressure, brainFlow, brainColor, figureTranslation;
-
-  if (time <= restPhase) {
-    // Rest phase
-    heartRate = 70;
-    bloodPressure = "120/80";
-    brainFlow = 100;
-    brainColor = "#3498db"; // blue
-    figureTranslation = 0;
-  } else if (time <= standPhase) {
-    // Standing phase: elevated heart rate and brain flow, slight BP dip
-    heartRate = 85;
-    bloodPressure = "115/75";
-    brainFlow = 110;
-    brainColor = "#ff9800"; // orange-ish indicating activation
-    // Interpolate upward movement: at time=600, 0px; at time=1200, -20px
-    figureTranslation = -20 * ((time - restPhase) / (standPhase - restPhase));
-  } else {
-    // Sitting phase: recovery
-    heartRate = 75;
-    bloodPressure = "120/80";
-    brainFlow = 100;
-    brainColor = "#3498db"; // back to blue
-    // Interpolate back down: at time=1200, -20px; at time=1800, 0px
-    figureTranslation = -20 + 20 * ((time - standPhase) / (1800 - standPhase));
-  }
-
-  // Update the displayed internal numbers
-  const heartRateElem = document.getElementById("heartRate");
-  if (heartRateElem) heartRateElem.textContent = heartRate;
-  const bloodPressureElem = document.getElementById("bloodPressure");
-  if (bloodPressureElem) bloodPressureElem.textContent = bloodPressure;
-  const brainFlowElem = document.getElementById("brainFlow");
-  if (brainFlowElem) brainFlowElem.textContent = brainFlow;
-
-  // Update the brain color in the SVG
-  const brainElem = document.getElementById("brain");
-  if (brainElem) {
-    brainElem.setAttribute("fill", brainColor);
-  }
-
-  // Update the overall figure position (simulate slight movement)
-  const humanSVG = document.getElementById("humanSVG");
-  if (humanSVG) {
-    humanSVG.style.transform = `translateY(${figureTranslation}px)`;
-  }
-}
-
-// Setup the time slider interaction
-document.addEventListener('DOMContentLoaded', function() {
-  const timeSlider = document.getElementById("timeSlider");
-  if (timeSlider) {
-    // When the user moves the slider, update the visualization
-    timeSlider.addEventListener("input", function() {
-      const currentTime = +this.value; // slider value in seconds
-      updateBodyVisualization(currentTime);
-    });
-  }
-  
-  // OPTIONAL: Automatic progression (uncomment to enable)
-  /*
-  let autoProgress = true;
-  let currentTime = 0;
-  const totalTime = 1800; // 30 minutes in seconds
-  const interval = 1000; // update every second
-
-  setInterval(() => {
-    if (autoProgress && timeSlider) {
-      currentTime = (currentTime + 1) % (totalTime + 1);
-      timeSlider.value = currentTime;
-      updateBodyVisualization(currentTime);
-    }
-  }, interval);
-
-  // If user interacts with the slider, disable auto progression:
-  timeSlider.addEventListener("input", function() {
-    autoProgress = false;
-  });
-  */
-});
 
 // Add clickable interactivity to the heart element
 document.addEventListener('DOMContentLoaded', function() {

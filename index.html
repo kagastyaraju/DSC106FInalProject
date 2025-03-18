@@ -103,13 +103,11 @@
      <!-- User Profile Input -->
      <section id="user-profile">
       <h2>Personalize Your Experience</h2>
-      <p>Enter your resting blood pressure and heart rate to see how your body might respond to standing up, and compare your values to our study participants. Use the numbers provided if you don't your own values.
+      <p>Enter your resting blood pressure to see how your body might respond to standing up, and compare your values to our study participants. Use the numbers provided if you don't your own values.
       </p>
       <form id="profile-form">
         <label for="user-bp">Resting Blood Pressure (mmHg):</label>
-        <input type="number" id="user-bp" name="user-bp" placeholder="120" required>
-        <label for="user-hr">Resting Heart Rate (bpm):</label>
-        <input type="number" id="user-hr" name="user-hr" placeholder="70" required>
+        <input type="number" id="user-bp" name="user-bp" placeholder="80" required>
         <button type="submit">Submit</button>
       </form>
       <div id="profile-feedback" class="annotation"></div>
@@ -194,44 +192,6 @@
         <p id="personal-insight">After you submit your measurements, personalized feedback—including your percentile ranking—will appear here.</p>
       </div>
 
-      <!-- Embed the smaller body visualization here -->
-      <h3>Explore Your Body’s Response</h3>
-      <p>
-        Use the slider below to simulate a 30-minute timeline. Observe how your heart rate,
-        blood pressure, and brain flow might change in each phase—rest, stand, and sit.
-      </p>
-      <div id="mini-body-visualization" class="body-container" style="max-width: 250px; margin: 0 auto;">
-        <svg id="humanSVG" viewBox="0 0 200 400" width="120" height="240">
-          <!-- Head (with brain overlay) -->
-          <circle id="head" cx="100" cy="50" r="30" fill="#f5c6cb" stroke="#333" />
-          <ellipse id="brain" cx="100" cy="50" rx="20" ry="15" fill="#3498db" opacity="0.5" />
-          
-          <!-- Body -->
-          <rect id="body" x="80" y="80" width="40" height="100" fill="#f5c6cb" stroke="#333" />
-          
-          <!-- Heart icon -->
-          <path id="heart"
-            d="M100,120 C90,110 70,110 70,130 C70,150 100,170 100,170
-               C100,170 130,150 130,130 C130,110 110,110 100,120 Z"
-            fill="#e74c3c" />
-          
-          <!-- Legs -->
-          <line id="left-leg" x1="90" y1="180" x2="90" y2="240" stroke="#333" stroke-width="5" />
-          <line id="right-leg" x1="110" y1="180" x2="110" y2="240" stroke="#333" stroke-width="5" />
-        </svg>
-
-        <div class="slider-container" style="margin-top: 15px;">
-          <input type="range" id="timeSlider" min="0" max="1800" value="0" style="width: 100%;">
-          <p style="text-align: center;">Time: <span id="sliderTime">0</span> sec</p>
-        </div>
-
-        <div id="bodyInfo" style="text-align: center;">
-          <p>Heart Rate: <span id="heartRate">70</span> bpm</p>
-          <p>Blood Pressure: <span id="bloodPressure">120/80</span> mmHg</p>
-          <p>Brain Flow: <span id="brainFlow">100</span> ml/min</p>
-        </div>
-      </div>
-    </section>
 
     <!-- Gamified Quiz: Test Your Understanding -->
     <section id="quiz-section" class="scroll-section">
@@ -253,8 +213,8 @@
           <div class="quiz-question">
             <h4>Question 2: When you stand up, what happens to brain blood flow velocity (BFV)?</h4>
             <div class="quiz-options">
-              <button class="quiz-btn" data-correct="true" data-feedback="✓ Correct! BFV increases to help maintain brain perfusion.">It increases</button>
-              <button class="quiz-btn" data-feedback="✗ Not quite. BFV typically rises rather than drops.">It decreases</button>
+              <button class="quiz-btn" data-correct="true" data-feedback="✓ Correct! BFV decreases to help maintain brain perfusion.">It decreases</button>
+              <button class="quiz-btn" data-feedback="✗ Not quite. BFV typically drops rather than rises.">It increases</button>
               <button class="quiz-btn" data-feedback="✗ Not quite. There's a significant change when standing.">It stays the same</button>
             </div>
             <div class="quiz-result"></div>

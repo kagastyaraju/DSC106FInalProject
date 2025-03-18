@@ -36,6 +36,14 @@ h2 {
   padding-bottom: 5px;
 }
 
+/* New heading style for Explore section */
+h3 {
+  font-size: 1.6em;
+  color: #34495e;
+  text-align: center;
+  margin-top: 20px;
+}
+
 p {
   line-height: 1.6;
   font-size: 1.1em;
@@ -84,7 +92,7 @@ input[type="checkbox"], select, input[type="number"] {
 }
 
 input[type="range"] {
-  width: 200px;
+  width: 100%;
 }
 
 #timeSeriesChart, #phaseSummaryChart, #correlationChart, #profileChart {
@@ -470,40 +478,48 @@ footer a {
   right: 10px;
 }
 
-
 /* Styles for the Human Body Visualization */
-#human-body-visualization {
-  text-align: center;
-  margin: 20px 0;
-  padding: 20px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-
+/* Updated .body-container to match the look of other sections */
 .body-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 500px;
 }
 
 #humanSVG {
   margin-bottom: 15px;
+  width: 100px;
+  height: 200px;
 }
 
-/* Pulse animation for the heart */
+.slider-container {
+  margin-top: 15px;
+  text-align: center;
+}
+
+#bodyInfo {
+  text-align: center;
+}
+
+/* Pulse animation for the heart (renamed to avoid conflict) */
 #heart {
   transform-origin: center;
-  animation: pulse 1s infinite;
+  animation: heartBeat 1s infinite;
 }
 
-@keyframes pulse {
+@keyframes heartBeat {
   0% { transform: scale(1); }
   50% { transform: scale(1.1); }
   100% { transform: scale(1); }
 }
 
-/* Optional animation for standing up (example using CSS animation) */
+/* Optional animation for standing up */
 @keyframes standUp {
   0% { transform: translateY(0); }
   30% { transform: translateY(-20px); }
@@ -514,9 +530,3 @@ footer a {
 #humanSVG.animate-standing {
   animation: standUp 1s ease-out;
 }
-
-#humanSVG {
-  width: 100px;
-  height: 200px;
-}
-
